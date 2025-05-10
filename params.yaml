@@ -1,0 +1,13 @@
+prepare:
+  parallels: 5
+  split: 0.70
+  seed: 42
+
+featurize:
+  max_features: 4
+  ngrams: 1
+
+train:
+  seed: 42
+  n_est: 4
+  min_split: 0.01
