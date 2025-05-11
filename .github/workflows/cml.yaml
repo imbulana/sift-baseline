@@ -32,8 +32,8 @@ jobs:
             git fetch origin main:main
           fi
 
-          echo "pulling data from DVC remote"
-          dvc pull data
+          echo "pulling from DVC remote"
+          dvc pull
 
           echo "running experiment"
           dvc exp run
