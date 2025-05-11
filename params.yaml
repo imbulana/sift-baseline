@@ -4,7 +4,7 @@ prepare:
   seed: 42
 
 featurize:
-  max_features: 4
+  max_features: 3
   ngrams: 1
 
 train:
