@@ -29,7 +29,7 @@ jobs:
             git fetch origin main:main
           fi
 
-          dvc pull data
+          dvc pull
           dvc exp run
           dvc push
           # echo "Attempting to pull evaluation metrics if experiment has been already run." 
