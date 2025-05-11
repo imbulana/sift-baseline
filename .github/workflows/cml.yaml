@@ -3,6 +3,8 @@ on: pull_request
 jobs:
   run:
     runs-on: [ubuntu-latest]
+    permissions: 
+      pull-requests: write
     steps:
       - uses: iterative/setup-cml@v2
       - uses: iterative/setup-dvc@v1
@@ -25,7 +27,16 @@ jobs:
             git fetch origin main:main
           fi
 
+          echo "Attempting to pull evaluation metrics if experiment has been already run." 
           dvc pull eval
+
+          if [ ! -d eval ]; then
+            echo "No evaluation metrics found. Running experiment"
+            dvc exp run 
+            echo "Experiment finished. Pushing results to DVC remote."
+            dvc push
+          fi
+
           dvc plots diff $PREVIOUS_REF workspace \
             --show-vega --targets ROC | json5 > vega.json
           vl2svg vega.json roc.svg
