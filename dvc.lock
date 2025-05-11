@@ -28,8 +28,8 @@ stages:
       nfiles: 2
     - path: src/prepare/collate.py
       hash: md5
-      md5: 075f9c5c4e5e0a24a7baece2c1dffe62
-      size: 1328
+      md5: e9f367d810c88a291642402925e31cf6
+      size: 1324
     params:
       params.yaml:
         prepare.seed: 42
@@ -78,7 +78,7 @@ stages:
     outs:
     - path: data/features
       hash: md5
-      md5: db4fba065b2f1798a85991f7747b2b74.dir
+      md5: 18d8641e69197f9320e4f87373f58079.dir
       size: 1906870
       nfiles: 4
   train:
@@ -86,7 +86,7 @@ stages:
     deps:
     - path: data/features
       hash: md5
-      md5: db4fba065b2f1798a85991f7747b2b74.dir
+      md5: 18d8641e69197f9320e4f87373f58079.dir
       size: 1906870
       nfiles: 4
     - path: src/train.py
@@ -101,7 +101,7 @@ stages:
     outs:
     - path: models/random_forest
       hash: md5
-      md5: 8cfb150f3b5dbc0a4066dd2a9a558472.dir
+      md5: 50b404562e75553b8077609cde8ae916.dir
       size: 85313
       nfiles: 2
   evaluate:
@@ -109,12 +109,12 @@ stages:
     deps:
     - path: data/features
       hash: md5
-      md5: db4fba065b2f1798a85991f7747b2b74.dir
+      md5: 18d8641e69197f9320e4f87373f58079.dir
       size: 1906870
       nfiles: 4
     - path: models/random_forest
       hash: md5
-      md5: 8cfb150f3b5dbc0a4066dd2a9a558472.dir
+      md5: 50b404562e75553b8077609cde8ae916.dir
       size: 85313
       nfiles: 2
     - path: src/evaluate.py
