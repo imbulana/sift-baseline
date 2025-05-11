@@ -16,6 +16,9 @@ jobs:
       # Needed for https://github.com/iterative/example-repos-dev/issues/225
       - name: Installs JSON5
         run: npm install -g json5
+      - name: Install requirements
+        run: |
+          pip install -r requirements.txt
       - name: Generate metrics report
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -29,19 +32,16 @@ jobs:
             git fetch origin main:main
           fi
 
-          dvc pull
+          echo "pulling data from DVC remote"
+          dvc pull data
+
+          echo "running experiment"
           dvc exp run
+
+          echo "Experiment finished. Pushing results to DVC remote."
           dvc push
-          # echo "Attempting to pull evaluation metrics if experiment has been already run." 
-          # dvc pull eval
 
-          # if [ ! -d eval ]; then
-          #   echo "No evaluation metrics found. Running experiment"
-          #   dvc exp run 
-          #   echo "Experiment finished. Pushing results to DVC remote."
-          #   dvc push
-          # fi
-
+          echo "Generating plots"
           dvc plots diff $PREVIOUS_REF workspace \
             --show-vega --targets ROC | json5 > vega.json
           vl2svg vega.json roc.svg
