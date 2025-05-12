@@ -6,22 +6,16 @@ jobs:
     permissions: 
       pull-requests: write
     steps:
-      - uses: actions/setup-python@v4
-        with:
-            python-version: '3.x'
       - uses: iterative/setup-cml@v2
       - uses: iterative/setup-dvc@v1
-        # with:
-        #   version: latest
+        with:
+          version: latest
       - uses: actions/checkout@v3
         with:
           fetch-depth: 2
       # Needed for https://github.com/iterative/example-repos-dev/issues/225
       - name: Installs JSON5
         run: npm install -g json5
-      - name: Install requirements
-        run: |
-          pip install -r requirements.txt
       - name: Generate metrics report
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -35,16 +29,16 @@ jobs:
             git fetch origin main:main
           fi
 
-          # echo "pulling from DVC remote"
-          # dvc pull
+          echo "Attempting to pull evaluation metrics if experiment has been already run." 
+          dvc pull eval
 
-          echo "running experiment"
-          dvc exp run --pull --allow-missing
+          if [ ! -d eval ]; then
+            echo "No evaluation metrics found. Running experiment"
+            dvc exp run 
+            echo "Experiment finished. Pushing results to DVC remote."
+            dvc push
+          fi
 
-          echo "Experiment finished. Pushing results to DVC remote."
-          dvc push
-
-          echo "Generating plots"
           dvc plots diff $PREVIOUS_REF workspace \
             --show-vega --targets ROC | json5 > vega.json
           vl2svg vega.json roc.svg
