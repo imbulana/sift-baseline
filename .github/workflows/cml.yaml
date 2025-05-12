@@ -7,7 +7,7 @@ jobs:
       pull-requests: write
     steps:
       - uses: iterative/setup-cml@v2
-      - uses: iterative/setup-dvc@v1
+      - uses: iterative/setup-dvc@v3
         with:
           version: latest
       - uses: actions/checkout@v3
