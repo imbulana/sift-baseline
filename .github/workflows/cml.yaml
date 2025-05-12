@@ -8,9 +8,14 @@ jobs:
     steps:
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
+            python-version: '3.x'
       - uses: iterative/setup-cml@v2
       - uses: iterative/setup-dvc@v1
+        # with:
+        #   version: latest
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
       # Needed for https://github.com/iterative/example-repos-dev/issues/225
       - name: Installs JSON5
         run: npm install -g json5
