@@ -78,7 +78,7 @@ stages:
     outs:
     - path: data/features
       hash: md5
-      md5: 18d8641e69197f9320e4f87373f58079.dir
+      md5: d1cce0f7c31e004903486caac776d2b2.dir
       size: 1906870
       nfiles: 4
   train:
@@ -86,7 +86,7 @@ stages:
     deps:
     - path: data/features
       hash: md5
-      md5: 18d8641e69197f9320e4f87373f58079.dir
+      md5: d1cce0f7c31e004903486caac776d2b2.dir
       size: 1906870
       nfiles: 4
     - path: src/train.py
@@ -96,26 +96,26 @@ stages:
     params:
       params.yaml:
         train.min_split: 0.01
-        train.n_est: 4
+        train.n_est: 5
         train.seed: 42
     outs:
     - path: models/random_forest
       hash: md5
-      md5: 50b404562e75553b8077609cde8ae916.dir
-      size: 85313
+      md5: 82ac27573edec848a20bc7d88346bb4e.dir
+      size: 108747
       nfiles: 2
   evaluate:
     cmd: python3 src/evaluate.py models/random_forest/model data/features
     deps:
     - path: data/features
       hash: md5
-      md5: 18d8641e69197f9320e4f87373f58079.dir
+      md5: d1cce0f7c31e004903486caac776d2b2.dir
       size: 1906870
       nfiles: 4
     - path: models/random_forest
       hash: md5
-      md5: 50b404562e75553b8077609cde8ae916.dir
-      size: 85313
+      md5: 82ac27573edec848a20bc7d88346bb4e.dir
+      size: 108747
       nfiles: 2
     - path: src/evaluate.py
       hash: md5
@@ -124,8 +124,8 @@ stages:
     outs:
     - path: eval
       hash: md5
-      md5: bc6f3009f32576a45bc4054a61e33fe9.dir
-      size: 3073826
+      md5: 8645f2222c3566195acaaf3a26943c0b.dir
+      size: 3243089
       nfiles: 8
   redact:
     cmd: python3 src/prepare/redact.py data/cleaned
