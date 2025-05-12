@@ -32,11 +32,11 @@ jobs:
             git fetch origin main:main
           fi
 
-          echo "pulling from DVC remote"
-          dvc pull
+          # echo "pulling from DVC remote"
+          # dvc pull
 
           echo "running experiment"
-          dvc exp run
+          dvc exp run --pull --allow-missing
 
           echo "Experiment finished. Pushing results to DVC remote."
           dvc push
