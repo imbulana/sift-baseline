@@ -1,6 +1,6 @@
 ## SIFT: Semantically dIscerning Fact from Tale
 
-<img src="assets/banner-v1-2.png" width="800px"></img>
+<img src="assets/banner.png" width="800px"></img>
 
 ## Setup
 
