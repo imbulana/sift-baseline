@@ -16,9 +16,13 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 2
-      - name: Pull model
+      - name: Pull and register model
         run: |
           dvc pull train
+
+          pip install gto
+          gto register models/random_forest
+
           cp -r models/random_forest/ build/model
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
