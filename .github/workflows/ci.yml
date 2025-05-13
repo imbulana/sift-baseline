@@ -17,8 +17,7 @@ jobs:
         DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
         DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-      
     - name: Build the Docker image
-      run: docker build -t varsubham/cicd-pipeline .
+      run: docker build -t imbulana/mlem .
     - name: Push to Dockerhub
-      run: docker push imbulana/sift:latest
+      run: docker push imbulana/mlem:latest
