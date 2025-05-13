@@ -1,44 +1,15 @@
 name: CML Report
 on: pull_request
-
 jobs:
-  deploy-runner:
-    runs-on: [ubuntu-latest]
-    steps:
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-
-      - uses: actions/checkout@v2
-
-      - uses: iterative/setup-cml@v1
-
-      - name: deploy
-        shell: bash
-        env:
-          repo_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        run: |
-          cml runner launch \
-          --name hosted-runner \
-          --cloud aws \
-          --cloud-region us-east-1 \
-          --cloud-type=t2.micro \
-          --labels=hosted-runner
-
   run:
-    needs: deploy-runner
-    # runs-on: [ubuntu-latest]
-    runs-on: [self-hosted, hosted-runner]
-    container: docker://dvcorg/cml
-
+    runs-on: [ubuntu-latest]
     permissions: 
       pull-requests: write
     steps:
-      # - uses: iterative/setup-cml@v2
-      # - uses: iterative/setup-dvc@v1
-      #   with:
-      #     version: latest
+      - uses: iterative/setup-cml@v2
+      - uses: iterative/setup-dvc@v1
+        with:
+          version: latest
       - uses: actions/checkout@v3
         with:
           fetch-depth: 2
@@ -107,3 +78,114 @@ jobs:
           EOF
 
           cml comment create --publish --pr=false report.md
+
+
+# name: CML Report
+# on: pull_request
+
+# jobs:
+#   deploy-runner:
+#     runs-on: [ubuntu-latest]
+#     steps:
+#       - name: Setup Terraform
+#         uses: hashicorp/setup-terraform@v2
+
+#       - uses: actions/checkout@v2
+
+#       - uses: iterative/setup-cml@v1
+
+#       - name: deploy
+#         shell: bash
+#         env:
+#           repo_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+#           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#         run: |
+#           cml runner launch \
+#           --name hosted-runner \
+#           --cloud aws \
+#           --cloud-region us-east-1 \
+#           --cloud-type=t2.micro \
+#           --labels=hosted-runner
+
+#   run:
+#     needs: deploy-runner
+#     # runs-on: [ubuntu-latest]
+#     runs-on: [self-hosted, hosted-runner]
+#     container: docker://dvcorg/cml
+
+#     permissions: 
+#       pull-requests: write
+#     steps:
+#       # - uses: iterative/setup-cml@v2
+#       # - uses: iterative/setup-dvc@v1
+#       #   with:
+#       #     version: latest
+#       - uses: actions/checkout@v3
+#         with:
+#           fetch-depth: 2
+#       # Needed for https://github.com/iterative/example-repos-dev/issues/225
+#       - name: Installs JSON5
+#         run: npm install -g json5
+#       - name: Install requirements
+#         run: |
+#           pip install -r requirements.txt
+#       - name: Generate metrics report
+#         env:
+#           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#           GDRIVE_CREDENTIALS_DATA : ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
+#         run: |
+#           cml ci
+#           if [ $GITHUB_REF = refs/heads/main ]; then
+#             PREVIOUS_REF=HEAD~1
+#           else
+#             PREVIOUS_REF=main
+#             git fetch origin main:main
+#           fi
+
+#           echo "pulling from DVC remote"
+#           dvc pull
+
+#           echo "running experiment"
+#           dvc exp run
+
+#           echo "Experiment finished. Pushing results to DVC remote."
+#           dvc push
+
+#           echo "Generating plots"
+#           dvc plots diff $PREVIOUS_REF workspace \
+#             --show-vega --targets ROC | json5 > vega.json
+#           vl2svg vega.json roc.svg
+
+#           dvc plots diff $PREVIOUS_REF workspace \
+#             --show-vega --targets Precision-Recall | json5 > vega.json
+#           vl2svg vega.json prc.svg
+
+#           dvc plots diff $PREVIOUS_REF workspace \
+#             --show-vega --targets Confusion-Matrix | json5 > vega.json
+#           vl2svg vega.json confusion.svg
+
+#           cp eval/plots/images/importance.png importance_workspace.png
+
+#           git checkout $PREVIOUS_REF -- dvc.lock
+#           cp eval/plots/images/importance.png importance_previous.png
+
+#           dvc_report=$(dvc exp diff $PREVIOUS_REF --md)
+
+#           cat <<EOF > report.md
+#           # CML Report
+#           ## Plots
+#           ![ROC](./roc.svg)
+#           ![Precision-Recall](./prc.svg)
+#           ![Confusion Matrix](./confusion.svg)
+#           #### Feature Importance: ${PREVIOUS_REF}
+#           ![Feature Importance: ${PREVIOUS_REF}](./importance_previous.png)
+#           #### Feature Importance: workspace
+#           ![Feature Importance: workspace](./importance_workspace.png)
+
+#           ## Metrics and Params
+#           ### ${PREVIOUS_REF} → workspace
+#           ${dvc_report}
+#           EOF
+
+#           cml comment create --publish --pr=false report.md
