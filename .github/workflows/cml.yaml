@@ -16,16 +16,17 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          RUNNER_NAME=cml runner launch \
+          cml runner launch \
+          --name hosted-runner \
           --cloud aws \
           --cloud-region us-east-1 \
           --cloud-type=t2.micro \
-          --labels=cml-runner
+          --labels=hosted-runner
 
   run:
     needs: deploy-runner
     # runs-on: [ubuntu-latest]
-    runs-on: [self-hosted, cml-runner]
+    runs-on: [self-hosted, hosted-runner]
     container: docker://dvcorg/cml
 
     permissions: 
