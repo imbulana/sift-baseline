@@ -23,9 +23,9 @@ jobs:
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GDRIVE_CREDENTIALS_DATA : ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
+      - uses: iterative/gto-action@v2
       - name: Register model
         run: |
-          pip install gto
           gto register models/random_forest
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
