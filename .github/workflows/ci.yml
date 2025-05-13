@@ -19,15 +19,17 @@ jobs:
       - name: Pull and register model
         run: |
           dvc pull train
-
-          pip install gto
-          gto register models/random_forest
-
           cp -r models/random_forest/ build/model
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GDRIVE_CREDENTIALS_DATA : ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
-      - name: Login Dockerhub
+      - name: Register model
+        run: |
+          pip install gto
+          gto register models/random_forest
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Login to Dockerhub
         env:
           DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
           DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
