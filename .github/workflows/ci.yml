@@ -10,7 +10,6 @@ jobs:
     permissions: 
       pull-requests: write
     steps:
-      - uses: iterative/setup-cml@v2
       - uses: iterative/setup-dvc@v1
         with:
           version: latest
@@ -21,7 +20,7 @@ jobs:
         run: npm install -g json5
       - name: Pull model
         run: |
-          dvc pull models
+          dvc pull train
           cp -r models/random_forest/ build/model
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
